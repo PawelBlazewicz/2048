@@ -52,13 +52,45 @@ const draw = () => {
 }
 
 const slide = (row) => {
-    
+    let arr =[];
+    row.reverse()
+        .forEach(x => { x===0? arr.push(0) : arr.unshift(x) } );
+    return arr;    
 }
 
+const combine = (row) =>{
+    row = slide(row)
+    for (let i = 0; i < 3; ++i){
+        if( row[i] === row[i+1] ) {
+            row[i] *=2 ;
+            row[i+1]=0;
+            return slide(row);
+            break;
+        }    
+    }
+    return row;
+}
 
-console.log(grid);
-addNumber();
-addNumber();
-//grid[1][2] =4;
-draw();
-console.table(grid);
+const updateBoard =(event)=> {
+    console.log(event);
+    if (event.code === "ArrowUp" ) {
+        for (let i = 0; i < 4; ++i){            
+            grid[i] = combine(grid[i]);
+        }
+        addNumber();
+    }
+    
+    draw();
+} 
+
+
+const startGame =()=> {
+    addNumber();
+    addNumber();
+    draw();
+    document.addEventListener('keydown', updateBoard)
+}
+
+// console.log(grid);
+// console.table(grid);
+startGame()
