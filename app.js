@@ -1,7 +1,7 @@
 //const grid = new Array(4).fill([0, 0, 0, 0]);
-const grid = [  [0, 0, 0, 0],
-                [0, 0, 0, 0],
-                [0, 0, 0, 0],
+let grid = [    [2048, 512, 128, 0],
+                [64, 8, 16, 32],
+                [2, 4, 0, 0],
                 [0, 0, 0, 0]    ];
 
 const ctx = document.querySelector(".gameBoard").getContext("2d");
@@ -29,27 +29,56 @@ const draw = () => {
     for (let i = 0; i < 4; ++i){
         for (let j = 0; j < 4; ++j){
             //ctx.beginPath();
-            //ctx.lineWidth = "1";
-            //ctx.strokeStyle = "green";
+            
+            // ctx.strokeStyle = "green";
             
             ctx.fillStyle='rgb(140,140,140)';
             ctx.fillRect(10 + i*110, 10 + j*110, 100, 100); 
+            ctx.lineWidth = "2";                        //Border
             ctx.fillStyle='rgb(0,0,0)';                 //Border
             ctx.rect(10 + i*110, 10 + j*110, 100, 100); //Border
             ctx.stroke();                               //Border
 
 
             if (grid[i][j] !==0){
-                ctx.fillStyle='rgb(250,240,240)';
+                ctx.fillStyle='rgb('+(250 - ((grid[i][j])==64? 100 :0)) +','+(220 - ~~((grid[i][j])/5)) +','+(250 - ((grid[i][j])*32)) +')';
                 ctx.fillRect(10 + i*110, 10 + j*110, 100, 100); 
                 ctx.fillStyle='rgb(0,0,0)';
-                ctx.font = "50px Georgia";
-                ctx.fillText( grid[i][j] ,40 + i*110 , 70 + j*110 );
+                ctx.font = ""+45 - ~~((grid[i][j])/120)+"px Arial";
+                ctx.fillText( grid[i][j] ,45 - ((~~(grid[i][j]/100))?10:0) -((~~(grid[i][j]/10))?8:0) + i*110 , 75 + j*110 );
                 
             }
         }
     }
 }
+
+const flip = (grid) =>{
+    const arr = [  [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]    ];
+    for (let i = 0; i < 4; ++i){
+        for (let j = 0; j < 4; ++j){
+            arr[i][j] = grid[j][i];
+        }
+    }
+    return arr;
+}
+
+const flipBack = (grid) =>{
+    const arr = [  [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]    ];
+    for (let i = 0; i < 4; ++i){
+        for (let j = 0; j < 4; ++j){
+            arr[j][i] = grid[i][j] || 0;
+        }
+    }
+    return arr;
+}
+
+
 
 const slide = (row) => {
     let arr =[];
@@ -72,14 +101,40 @@ const combine = (row) =>{
 }
 
 const updateBoard =(event)=> {
-    console.log(event);
+    //console.log(event);
+    const copy = [...grid];
+
     if (event.code === "ArrowUp" ) {
         for (let i = 0; i < 4; ++i){            
             grid[i] = combine(grid[i]);
         }
-        addNumber();
+    }
+
+    if (event.code === "ArrowDown" ) {
+        for (let i = 0; i < 4; ++i){           
+            grid[i] = combine(grid[i].reverse()).reverse();
+        }
+    }
+
+    if (event.code === "ArrowLeft" ) {
+        grid =flip(grid); 
+        for (let i = 0; i < 4; ++i){           
+            grid[i] = combine(grid[i]);
+        }
+        grid =flipBack(grid);
+    }
+
+    if (event.code === "ArrowRight" ) {
+        grid =flip(grid); 
+        for (let i = 0; i < 4; ++i){                     
+            grid[i] = combine(grid[i].reverse()).reverse();
+        }
+        grid =flipBack(grid);
     }
     
+    if(copy.join('') !== grid.join('')){
+        addNumber();
+    } 
     draw();
 } 
 
