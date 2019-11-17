@@ -1,3 +1,4 @@
+//export { draw };
 const ctx = document.querySelector(".gameBoard").getContext("2d");
 
 const colors = {
@@ -42,5 +43,3 @@ const draw = grid => {
     }
   }
 };
-
-export { draw };

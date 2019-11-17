@@ -1,12 +1,6 @@
-import {draw} from "./draw.js"
+//import {draw} from "./draw.js"
 const zero = new Array(4).fill([0, 0, 0, 0]);
 let grid = JSON.parse(JSON.stringify(zero));
-//Array.from(zero);
-// let grid = [    [2048, 512, 128, 0],
-//                 [64, 8, 16, 32],
-//                 [2, 4, 1024, 0],
-//                 [0, 0, 0, 0]    ];
-
 
 const addNumber = () => {
     let empty = [];
@@ -18,11 +12,8 @@ const addNumber = () => {
         }
     }
     if(empty.length) {
-        let spot =  empty[Math.floor(empty.length * Math.random())];
-        console.log(spot);        
+        let spot =  empty[Math.floor(empty.length * Math.random())];        
         grid[spot[0]][spot[1]] = (Math.random() > 0.5) ? 2 : 4;
-    } else {
-        alert("przegrana");
     }
 }
 
@@ -44,54 +35,58 @@ const slide = (row) => {
 }
 
 const combine = (row) =>{
-    row = slide(row)
+    row = slide(row);
     for (let i = 0; i < 3; ++i){
         if( row[i] === row[i+1] ) {
             row[i] *=2 ;
             row[i+1]=0;
             return slide(row);
-            break;
         }    
     }
     return row;
 }
 
-const updateBoard =(event)=> {
-    console.log(event);
+const isGameOver = (grid) => {
+    //grid.filter(e => e.some(x => x===0) ).length;
+    for (let i = 0; i < 4; ++i){
+        for (let j = 0; j < 3; ++j){
+            if(grid[i][j]===grid[i][j+1] || 
+                grid[j][i] === grid [j+1][i] ||
+                grid[i][j] === 0) {
+                return;
+            }
+        }
+    }
+    alert("game over") 
+}
+
+const  updateBoard = async (event) => {
     const copy = [...grid];
 
-    if (event.code === "ArrowUp" ) {
-        for (let i = 0; i < 4; ++i){            
-            grid[i] = combine(grid[i]);
-        }
-    }
-
-    if (event.code === "ArrowDown" ) {
-        for (let i = 0; i < 4; ++i){           
-            grid[i] = combine(grid[i].reverse()).reverse();
-        }
-    }
-
-    if (event.code === "ArrowLeft" ) {
-        grid =flip(grid, 1); 
-        for (let i = 0; i < 4; ++i){           
-            grid[i] = combine(grid[i]);
-        }
-        grid = flip(grid, 0);
-    }
-
-    if (event.code === "ArrowRight" ) {
-        grid =flip(grid, 1); 
-        for (let i = 0; i < 4; ++i){                     
-            grid[i] = combine(grid[i].reverse()).reverse();
-        }
-        grid =flip(grid, 0);
-    }
-    
+    switch(event.keyCode) {
+        case 37: 
+                await flip(grid, 1).map((e, i) =>  {grid[i] = combine(e)});
+                grid = flip(grid, 0);
+                break;
+        case 38: 
+                await grid.map((e, i) =>  {grid[i] = combine(e)}); 
+                break;
+        case 39:
+                await flip(grid, 1).map((e, i) =>  {grid[i] = combine(e.reverse()).reverse()});
+                grid = flip(grid, 0); 
+                break;
+        case 40: 
+                await grid.map((e, i) =>  {grid[i] = combine(e.reverse()).reverse()}); 
+                break;        
+    };
+     
+    await draw(grid);
+    isGameOver(grid);
     if(copy.join('') !== grid.join('')){
         addNumber();
     } 
-    draw(grid);
+
+    await setTimeout(draw(grid), 400);  
 } 
 
 const startGame =()=> {
@@ -101,6 +96,4 @@ const startGame =()=> {
     document.addEventListener('keydown', updateBoard)
 }
 
-// console.log(grid);
-// console.table(grid);
 startGame()
