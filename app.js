@@ -1,8 +1,12 @@
+import {draw} from "./draw.js"
 const zero = new Array(4).fill([0, 0, 0, 0]);
 let grid = JSON.parse(JSON.stringify(zero));
 //Array.from(zero);
+// let grid = [    [2048, 512, 128, 0],
+//                 [64, 8, 16, 32],
+//                 [2, 4, 1024, 0],
+//                 [0, 0, 0, 0]    ];
 
-const ctx = document.querySelector(".gameBoard").getContext("2d");
 
 const addNumber = () => {
     let empty = [];
@@ -22,43 +26,11 @@ const addNumber = () => {
     }
 }
 
-const draw = () => {
-    //let w = 100;
-    for (let i = 0; i < 4; ++i){
-        for (let j = 0; j < 4; ++j){
-            ctx.fillStyle='rgb(140,140,140)';
-            ctx.fillRect(10 + i*110, 10 + j*110, 100, 100); 
-            ctx.lineWidth = "2";                        //Border
-            ctx.fillStyle='rgb(0,0,0)';                 //Border
-            ctx.rect(10 + i*110, 10 + j*110, 100, 100); //Border
-            ctx.stroke();                               //Border
-
-            if (grid[i][j] !==0){
-                ctx.fillStyle='rgb('+(250 - ((grid[i][j])==64? 100 :0)) +','+(220 - ~~((grid[i][j])/5)) +','+(250 - ((grid[i][j])*32)) +')';
-                ctx.fillRect(10 + i*110, 10 + j*110, 100, 100); 
-                ctx.fillStyle='rgb(0,0,0)';
-                ctx.font = ""+45 - ~~((grid[i][j])/120)+"px Arial";
-                ctx.fillText( grid[i][j] ,45 - ((~~(grid[i][j]/100))?10:0) -((~~(grid[i][j]/10))?8:0) + i*110 , 75 + j*110 );
-            }
-        }
-    }
-}
-
-const flip = (grid) =>{
+const flip = (grid, dir) =>{
     const arr = JSON.parse(JSON.stringify(zero));
     for (let i = 0; i < 4; ++i){
         for (let j = 0; j < 4; ++j){
-            arr[i][j] = grid[j][i];
-        }
-    }
-    return arr;
-}
-
-const flipBack = (grid) =>{
-    const arr = JSON.parse(JSON.stringify(zero));
-    for (let i = 0; i < 4; ++i){
-        for (let j = 0; j < 4; ++j){
-            arr[j][i] = grid[i][j];
+            dir ? arr[i][j] = grid[j][i] : arr[j][i] = grid[i][j];
         }
     }
     return arr;
@@ -101,31 +73,31 @@ const updateBoard =(event)=> {
     }
 
     if (event.code === "ArrowLeft" ) {
-        grid =flip(grid); 
+        grid =flip(grid, 1); 
         for (let i = 0; i < 4; ++i){           
             grid[i] = combine(grid[i]);
         }
-        grid = flipBack(grid);
+        grid = flip(grid, 0);
     }
 
     if (event.code === "ArrowRight" ) {
-        grid =flip(grid); 
+        grid =flip(grid, 1); 
         for (let i = 0; i < 4; ++i){                     
             grid[i] = combine(grid[i].reverse()).reverse();
         }
-        grid =flipBack(grid);
+        grid =flip(grid, 0);
     }
     
     if(copy.join('') !== grid.join('')){
         addNumber();
     } 
-    draw();
+    draw(grid);
 } 
 
 const startGame =()=> {
     addNumber();
     addNumber();
-    draw();
+    draw(grid);
     document.addEventListener('keydown', updateBoard)
 }
 
