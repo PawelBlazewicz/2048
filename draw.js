@@ -17,6 +17,8 @@ const colors = {
 };
 
 const draw = grid => {
+  ctx.beginPath();
+  ctx.clearRect(0,0,450,450);
   for (let i = 0; i < 4; ++i) {
     for (let j = 0; j < 4; ++j) {
       ctx.fillStyle = "rgb(140,140,140)";

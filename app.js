@@ -48,10 +48,10 @@ const combine = (row) =>{
 
 const isGameOver = (grid) => {
     //grid.filter(e => e.some(x => x===0) ).length;
-    for (let i = 0; i < 4; ++i){
-        for (let j = 0; j < 3; ++j){
-            if(grid[i][j]===grid[i][j+1] || 
-                grid[j][i] === grid [j+1][i] ||
+    for (let i = 0; i < 4; ++i) {
+        for (let j = 0; j < 3; ++j) {
+            if( grid[i][j] === grid[i][j+1] || 
+                grid[j][i] === grid[j+1][i] ||
                 grid[i][j] === 0) {
                 return;
             }
@@ -80,13 +80,13 @@ const  updateBoard = async (event) => {
                 break;        
     };
      
-    await draw(grid);
+    draw(grid);
     isGameOver(grid);
     if(copy.join('') !== grid.join('')){
         addNumber();
     } 
-
-    await setTimeout(draw(grid), 400);  
+    draw(grid)
+    console.log(event.timeStamp); 
 } 
 
 const startGame =()=> {
