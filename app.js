@@ -65,18 +65,18 @@ const  updateBoard = async (event) => {
 
     switch(event.keyCode) {
         case 37: 
-                await flip(grid, 1).map((e, i) =>  {grid[i] = combine(e)});
+                flip(grid, 1).map((e, i) =>  {grid[i] = combine(e)});
                 grid = flip(grid, 0);
                 break;
         case 38: 
-                await grid.map((e, i) =>  {grid[i] = combine(e)}); 
+                grid.map((e, i) =>  {grid[i] = combine(e)}); 
                 break;
         case 39:
-                await flip(grid, 1).map((e, i) =>  {grid[i] = combine(e.reverse()).reverse()});
+                flip(grid, 1).map((e, i) =>  {grid[i] = combine(e.reverse()).reverse()});
                 grid = flip(grid, 0); 
                 break;
         case 40: 
-                await grid.map((e, i) =>  {grid[i] = combine(e.reverse()).reverse()}); 
+                grid.map((e, i) =>  {grid[i] = combine(e.reverse()).reverse()}); 
                 break;        
     };
      
@@ -85,6 +85,7 @@ const  updateBoard = async (event) => {
     if(copy.join('') !== grid.join('')){
         addNumber();
     } 
+    await new Promise(resolve => setTimeout(resolve, 300));
     draw(grid)
     console.log(event.timeStamp); 
 } 
