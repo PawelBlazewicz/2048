@@ -1,4 +1,3 @@
-//export { draw };
 const ctx = document.querySelector(".gameBoard").getContext("2d");
 
 const colors = {
@@ -7,27 +6,27 @@ const colors = {
   8: "#f0b36f",
   16: "#f09f43",
   32: "#fa9018",
-  64: "#f4c023",
+  64: "#ff6c00",
   128: "#ffe502",
   256: "#f2f501",
-  512: "#ff6c00",
+  512: "#f6c013",
   1024: "#a01c05",
   2048: "#f8170a",
-  4096: "#1fff1f"
+  4096: "#1fff1f",
 };
 
-const draw = grid => {
+export default (grid) => {
   ctx.beginPath();
-  ctx.clearRect(0,0,450,450);
+  ctx.clearRect(0, 0, 450, 450);
   for (let i = 0; i < 4; ++i) {
     for (let j = 0; j < 4; ++j) {
       ctx.fillStyle = "rgb(140,140,140)";
       ctx.fillRect(10 + i * 110, 10 + j * 110, 100, 100);
       //Border
-      ctx.lineWidth = "2"; 
-      ctx.fillStyle = "rgb(0,0,0)"; 
+      ctx.lineWidth = "2";
+      ctx.fillStyle = "rgb(0,0,0)";
       ctx.rect(10 + i * 110, 10 + j * 110, 100, 100);
-      ctx.stroke(); 
+      ctx.stroke();
       //Border
       let val = grid[i][j];
 
@@ -39,7 +38,7 @@ const draw = grid => {
         ctx.fillText(
           val,
           45 - (val > 100 ? 15 : 0) - (val > 10 ? 13 : 0) + i * 110,
-          75 + j * 110
+          75 + j * 110,
         );
       }
     }
